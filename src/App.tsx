@@ -34,6 +34,14 @@ const App = () => {
     setTimeout(() => setCopiedCommand(""), 2000);
   };
 
+  const [starsCount, setStarsCount] = useState("Loading...");
+
+  useEffect(() => {
+    fetch("https://api.github.com/repos/tanmayvaij/snapcube")
+      .then((res) => res.json())
+      .then((repoStats) => setStarsCount(repoStats.stargazers_count));
+  }, []);
+
   const features = [
     {
       icon: Package,
@@ -125,7 +133,7 @@ const App = () => {
 
   const stats = [
     { number: "10+", label: "Projects Cloned", icon: Package },
-    { number: "3", label: "GitHub Stars", icon: Star },
+    { number: `${starsCount}`, label: "GitHub Stars", icon: Star },
     { number: "< 1s", label: "Average Clone Time", icon: Zap },
     { number: "100%", label: "Binary Fidelity", icon: Shield },
   ];
