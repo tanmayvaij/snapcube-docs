@@ -143,7 +143,8 @@ const App = () => {
     },
     {
       title: "GitLab Private Repo",
-      command: "snapcube clone-repo gitlab:myorg/private@main --token glpat_xxx",
+      command:
+        "snapcube clone-repo gitlab:myorg/private@main --token glpat_xxx",
       description: "Clone private GitLab repos with personal access token",
     },
     {
@@ -492,9 +493,7 @@ const App = () => {
               <div className="text-center">
                 <div className="text-2xl mb-2">🎯</div>
                 <div className="font-medium">TypeScript Built</div>
-                <div className="text-white text-sm">
-                  Reliable and type-safe
-                </div>
+                <div className="text-white text-sm">Reliable and type-safe</div>
               </div>
             </div>
           </div>
@@ -561,7 +560,8 @@ const App = () => {
               </span>
             </h2>
             <p className="text-xl text-white max-w-3xl mx-auto mb-8">
-              Clone any repository directly to JSON without manual downloads. Full support for both platforms with seamless authentication.
+              Clone any repository directly to JSON without manual downloads.
+              Full support for both platforms with seamless authentication.
             </p>
           </div>
 
@@ -619,7 +619,9 @@ const App = () => {
                     snapcube clone-repo gitlab:myorg/private@main
                   </span>
                   <br />
-                  <span className="text-slate-500">--token glpat_xxx123abc</span>
+                  <span className="text-slate-500">
+                    --token glpat_xxx123abc
+                  </span>
                 </div>
               </div>
               <div className="space-y-2">
@@ -648,13 +650,16 @@ const App = () => {
               </div>
               <h3 className="text-2xl font-bold mb-4">Structure-Only Mode</h3>
               <p className="text-white max-w-2xl mx-auto">
-                Perfect for AI analysis and lightweight snapshots - get just the file paths without content or metadata
+                Perfect for AI analysis and lightweight snapshots - get just the
+                file paths without content or metadata
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h4 className="font-semibold mb-3 text-purple-300">Regular Mode Output</h4>
+                <h4 className="font-semibold mb-3 text-purple-300">
+                  Regular Mode Output
+                </h4>
                 <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-xs border border-slate-700">
                   <pre className="text-slate-400">{`[
   {
@@ -668,7 +673,9 @@ const App = () => {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold mb-3 text-blue-300">Structure-Only Mode</h4>
+                <h4 className="font-semibold mb-3 text-blue-300">
+                  Structure-Only Mode
+                </h4>
                 <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-xs border border-slate-700">
                   <pre className="text-slate-400">{`[
   "my-project/package.json",
@@ -692,7 +699,8 @@ const App = () => {
             </span>
           </h2>
           <p className="text-xl text-white text-center mb-16 max-w-3xl mx-auto">
-            Whether you're cloning local projects or remote repositories, the workflow is always the same
+            Whether you're cloning local projects or remote repositories, the
+            workflow is always the same
           </p>
 
           <div className="grid md:grid-cols-3 gap-8 mb-20">
