@@ -22,6 +22,7 @@ import {
   Heart,
   Mail,
   ExternalLink,
+  Globe,
 } from "lucide-react";
 
 const App = () => {
@@ -39,7 +40,8 @@ const App = () => {
   useEffect(() => {
     fetch("https://api.github.com/repos/tanmayvaij/snapcube")
       .then((res) => res.json())
-      .then((repoStats) => setStarsCount(repoStats.stargazers_count));
+      .then((repoStats) => setStarsCount(repoStats.stargazers_count))
+      .catch(() => setStarsCount("⭐"));
   }, []);
 
   const features = [
@@ -54,6 +56,11 @@ const App = () => {
       desc: "Clone public & private repos directly to JSON",
     },
     {
+      icon: Globe,
+      title: "GitLab Support",
+      desc: "Full GitLab repository cloning with authentication",
+    },
+    {
       icon: Shield,
       title: "Binary Safe",
       desc: "Handles all file types with perfect fidelity",
@@ -62,6 +69,11 @@ const App = () => {
       icon: Zap,
       title: "Lightning Fast",
       desc: "Minimal overhead, maximum performance",
+    },
+    {
+      icon: FileCode2,
+      title: "Structure-Only Mode",
+      desc: "Lightweight file path arrays for AI analysis",
     },
   ];
 
@@ -98,7 +110,7 @@ const App = () => {
 
   const commands = [
     {
-      title: "Basic Cloning",
+      title: "Basic Local Cloning",
       command: "snapcube clone ./my-project",
       description:
         "Creates my-project.snapcube.json with full project structure",
@@ -110,19 +122,29 @@ const App = () => {
     },
     {
       title: "Structure Only",
-      command: "snapcube clone ./my-project --ignore-all",
-      description: "Saves only folder structure and file metadata",
+      command: "snapcube clone ./my-project --structure-only",
+      description: "Returns just file paths array - perfect for AI analysis",
     },
     {
       title: "GitHub Public Repo",
-      command: "snapcube clone-repo facebook/react",
+      command: "snapcube clone-repo github:facebook/react@main",
       description:
-        "Downloads React repository structure to react.snapcube.json",
+        "Downloads React repository structure to facebook_react.snapcube.json",
     },
     {
       title: "GitHub Private Repo",
-      command: "snapcube clone-repo myorg/secret --token ghp_xxx",
+      command: "snapcube clone-repo github:myorg/secret@main --token ghp_xxx",
       description: "Access private repositories with personal access token",
+    },
+    {
+      title: "GitLab Repository",
+      command: "snapcube clone-repo gitlab:username/project@main",
+      description: "Clone GitLab repositories with full authentication support",
+    },
+    {
+      title: "GitLab Private Repo",
+      command: "snapcube clone-repo gitlab:myorg/private@main --token glpat_xxx",
+      description: "Clone private GitLab repos with personal access token",
     },
     {
       title: "Project Restoration",
@@ -132,7 +154,7 @@ const App = () => {
   ];
 
   const stats = [
-    { number: "10+", label: "Projects Cloned", icon: Package },
+    { number: "100+", label: "Projects Cloned", icon: Package },
     { number: `${starsCount}`, label: "GitHub Stars", icon: Star },
     { number: "< 1s", label: "Average Clone Time", icon: Zap },
     { number: "100%", label: "Binary Fidelity", icon: Shield },
@@ -140,19 +162,24 @@ const App = () => {
 
   const faqs = [
     {
+      question: "What's new in Snapcube 2.0?",
+      answer:
+        "Snapcube 2.0 introduces GitLab support, improved GitHub integration with better authentication, structure-only mode for AI analysis, enhanced error handling, and a completely rewritten codebase with TypeScript for better reliability.",
+    },
+    {
       question: "What file types are supported?",
       answer:
         "Snapcube supports all file types including binary files (images, videos, PDFs, executables), text files, and complex directory structures. Binary files are encoded in base64 for perfect preservation.",
     },
     {
-      question: "How large can projects be?",
+      question: "How does the structure-only mode work?",
       answer:
-        "There's no hard limit, but we recommend keeping snapshots under 100MB for optimal performance. Use --ignore-binaries for larger projects with many media files.",
+        "The --structure-only flag returns just an array of file paths without metadata or content, making it perfect for AI/LLM analysis of project structure, tech stack identification, and lightweight snapshots.",
     },
     {
       question: "Can I use this for private repositories?",
       answer:
-        "Yes! Use the --token flag with your GitHub Personal Access Token to clone private repositories. Your token is never stored or transmitted beyond the initial API call.",
+        "Yes! Use the --token flag with your GitHub or GitLab Personal Access Token to clone private repositories. Your token is never stored and only used for the API call.",
     },
     {
       question: "Does it work with monorepos?",
@@ -160,9 +187,9 @@ const App = () => {
         "Absolutely! Snapcube handles complex nested structures perfectly, making it ideal for monorepos, multi-package projects, and deeply nested codebases.",
     },
     {
-      question: "Is the JSON format documented?",
+      question: "What's the difference between GitHub and GitLab cloning?",
       answer:
-        "Yes, the JSON format is simple and well-documented. Each file includes metadata like path, size, encoding, and content. You can even inspect and modify the JSON manually if needed.",
+        "Both platforms are fully supported with the same feature set. Use github:owner/repo@branch for GitHub and gitlab:owner/repo@branch for GitLab. Authentication works the same way with --token for both platforms.",
     },
   ];
 
@@ -192,6 +219,9 @@ const App = () => {
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
               Snapcube
+            </span>
+            <span className="text-xs bg-green-500/20 text-green-400 px-2 py-1 rounded-full border border-green-500/30">
+              v2.0
             </span>
           </div>
           <div className="hidden md:flex items-center space-x-6">
@@ -239,10 +269,10 @@ const App = () => {
       {/* Hero Section */}
       <section className="relative z-10 px-6 py-20">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center space-x-2 bg-blue-500/10 border border-blue-500/20 rounded-full px-4 py-2 mb-8">
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-sm text-blue-300">
-              v1.3.1 - Now with GitHub Integration
+          <div className="inline-flex items-center space-x-2 bg-green-500/10 border border-green-500/20 rounded-full px-4 py-2 mb-8">
+            <Sparkles className="w-4 h-4 text-green-400" />
+            <span className="text-sm text-green-300">
+              v2.0.0 - GitLab Support & Enhanced Features
             </span>
           </div>
 
@@ -289,11 +319,11 @@ const App = () => {
           </div>
 
           {/* Feature Showcase */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-20">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`p-6 rounded-2xl border transition-all duration-500 cursor-pointer ${
+                className={`p-4 rounded-2xl border transition-all duration-500 cursor-pointer ${
                   currentFeature === index
                     ? "bg-blue-500/10 border-blue-500/30 shadow-xl shadow-blue-500/10 scale-105"
                     : "bg-slate-800/30 border-slate-700/50 hover:border-slate-600 hover:bg-slate-800/50"
@@ -301,11 +331,11 @@ const App = () => {
                 onClick={() => setCurrentFeature(index)}
               >
                 <feature.icon
-                  className={`w-8 h-8 mb-4 ${
+                  className={`w-6 h-6 mb-3 ${
                     currentFeature === index ? "text-blue-400" : "text-white"
                   }`}
                 />
-                <h3 className="font-semibold mb-2 text-sm">{feature.title}</h3>
+                <h3 className="font-semibold mb-2 text-xs">{feature.title}</h3>
                 <p className="text-xs text-white">{feature.desc}</p>
               </div>
             ))}
@@ -461,125 +491,9 @@ const App = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl mb-2">🎯</div>
-                <div className="font-medium">Zero Dependencies</div>
+                <div className="font-medium">TypeScript Built</div>
                 <div className="text-white text-sm">
-                  Clean, lightweight install
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Usage Examples */}
-      <section id="usage" className="relative z-10 px-6 py-20">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
-            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              Simple Three-Step Process
-            </span>
-          </h2>
-          <p className="text-xl text-white text-center mb-16 max-w-3xl mx-auto">
-            Whether you're cloning local projects or GitHub repositories, the
-            workflow is always the same
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-20">
-            {/* Step 1 */}
-            <div className="group relative">
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-blue-500/30 transition-all h-full">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-xl font-bold">
-                    1
-                  </div>
-                  <h3 className="text-xl font-semibold">Clone & Capture</h3>
-                </div>
-                <div className="space-y-3 mb-6">
-                  <div className="bg-slate-900/80 rounded-lg p-3 font-mono text-sm border border-slate-700">
-                    <span className="text-blue-400">
-                      snapcube clone ./my-project
-                    </span>
-                  </div>
-                  <div className="bg-slate-900/80 rounded-lg p-3 font-mono text-sm border border-slate-700">
-                    <span className="text-green-400">
-                      snapcube clone-repo facebook/react
-                    </span>
-                  </div>
-                </div>
-                <p className="text-white">
-                  Capture your entire project structure, file contents, and
-                  metadata into a single JSON file. Works with local directories
-                  or remote GitHub repositories.
-                </p>
-              </div>
-              {/* Connection line */}
-              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-blue-500 to-transparent"></div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="group relative">
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-cyan-500/30 transition-all h-full">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold">
-                    2
-                  </div>
-                  <h3 className="text-xl font-semibold">Share & Distribute</h3>
-                </div>
-                <div className="bg-slate-900/80 rounded-lg p-4 mb-6 border border-slate-700 text-center">
-                  <Folder className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
-                  <span className="text-cyan-400 font-mono text-sm">
-                    my-project.snapcube.json
-                  </span>
-                </div>
-                <p className="text-white">
-                  Share the lightweight JSON file through any method - email,
-                  cloud storage, version control, or send directly to AI
-                  assistants for analysis.
-                </p>
-                <div className="mt-4 flex justify-center space-x-4">
-                  <div className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded">
-                    📧 Email
-                  </div>
-                  <div className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded">
-                    ☁️ Cloud
-                  </div>
-                  <div className="text-xs text-slate-500 bg-slate-800/50 px-2 py-1 rounded">
-                    🤖 AI
-                  </div>
-                </div>
-              </div>
-              {/* Connection line */}
-              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-cyan-500 to-transparent"></div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="group">
-              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-green-500/30 transition-all h-full">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-xl font-bold">
-                    3
-                  </div>
-                  <h3 className="text-xl font-semibold">Recreate Instantly</h3>
-                </div>
-                <div className="bg-slate-900/80 rounded-lg p-4 mb-6 font-mono text-sm border border-slate-700">
-                  <span className="text-green-400">
-                    snapcube create my-project.snapcube.json
-                  </span>
-                </div>
-                <p className="text-white">
-                  Rebuild the exact project structure anywhere with perfect
-                  fidelity. All files, directories, and metadata are restored
-                  exactly as they were.
-                </p>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center space-x-2 text-sm text-white">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span>Perfect file restoration</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-sm text-white">
-                    <CheckCircle className="w-4 h-4 text-green-400" />
-                    <span>Binary files preserved</span>
-                  </div>
+                  Reliable and type-safe
                 </div>
               </div>
             </div>
@@ -637,146 +551,246 @@ const App = () => {
         </div>
       </section>
 
-      {/* GitHub Integration Showcase */}
+      {/* GitHub & GitLab Integration Showcase */}
       <section className="relative z-10 px-6 py-20 bg-gradient-to-r from-blue-900/20 to-slate-900/50">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                GitHub Integration
+                GitHub & GitLab Integration
               </span>
             </h2>
             <p className="text-xl text-white max-w-3xl mx-auto mb-8">
-              Clone any GitHub repository directly to JSON without manual
-              downloads. Supports both public and private repositories with
-              seamless authentication.
+              Clone any repository directly to JSON without manual downloads. Full support for both platforms with seamless authentication.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-12">
-            {/* Public Repos */}
+            {/* GitHub */}
             <div className="bg-slate-800/30 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-blue-500/20 transition-all">
               <div className="flex items-center space-x-3 mb-6">
                 <Github className="w-8 h-8 text-blue-400" />
-                <h3 className="text-2xl font-semibold">Public Repositories</h3>
+                <h3 className="text-2xl font-semibold">GitHub Repositories</h3>
               </div>
               <div className="space-y-4 mb-6">
                 <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
                   <span className="text-blue-400">
-                    snapcube clone-repo facebook/react
+                    snapcube clone-repo github:facebook/react@main
                   </span>
                 </div>
-                <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
-                  <span className="text-blue-400">
-                    snapcube clone-repo microsoft/typescript
-                  </span>
-                </div>
-                <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
-                  <span className="text-blue-400">
-                    snapcube clone-repo vercel/next.js
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-blue-400" />
-                  <span>No authentication required</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-blue-400" />
-                  <span>Rate limited but functional</span>
-                </div>
-                <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-blue-400" />
-                  <span>Perfect for open source projects</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Private Repos */}
-            <div className="bg-slate-800/30 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-green-500/20 transition-all">
-              <div className="flex items-center space-x-3 mb-6">
-                <Shield className="w-8 h-8 text-green-400" />
-                <h3 className="text-2xl font-semibold">Private Repositories</h3>
-              </div>
-              <div className="space-y-4 mb-6">
                 <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
                   <span className="text-green-400">
-                    snapcube clone-repo myorg/secret-project
+                    snapcube clone-repo github:myorg/private@main
                   </span>
                   <br />
                   <span className="text-slate-500">--token ghp_xxx123abc</span>
                 </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 text-sm text-white">
+                  <CheckCircle className="w-4 h-4 text-blue-400" />
+                  <span>Public & private repositories</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-white">
+                  <CheckCircle className="w-4 h-4 text-blue-400" />
+                  <span>Personal access token support</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-white">
+                  <CheckCircle className="w-4 h-4 text-blue-400" />
+                  <span>Organization repos supported</span>
+                </div>
+              </div>
+            </div>
+
+            {/* GitLab */}
+            <div className="bg-slate-800/30 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-orange-500/20 transition-all">
+              <div className="flex items-center space-x-3 mb-6">
+                <Globe className="w-8 h-8 text-orange-400" />
+                <h3 className="text-2xl font-semibold">GitLab Repositories</h3>
+              </div>
+              <div className="space-y-4 mb-6">
+                <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
+                  <span className="text-orange-400">
+                    snapcube clone-repo gitlab:username/project@main
+                  </span>
+                </div>
                 <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-sm border border-slate-700">
                   <span className="text-green-400">
-                    snapcube clone-repo company/internal-tool
+                    snapcube clone-repo gitlab:myorg/private@main
                   </span>
                   <br />
-                  <span className="text-slate-500">
-                    --token $GITHUB_TOKEN --ignore-binaries
-                  </span>
+                  <span className="text-slate-500">--token glpat_xxx123abc</span>
                 </div>
               </div>
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span>Secure token-based access</span>
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
+                  <span>Full GitLab.com integration</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span>Higher API rate limits</span>
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
+                  <span>Private repository access</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-white">
-                  <CheckCircle className="w-4 h-4 text-green-400" />
-                  <span>Organization repositories supported</span>
+                  <CheckCircle className="w-4 h-4 text-orange-400" />
+                  <span>Group projects supported</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* GitHub Token Guide */}
-          <div className="bg-gradient-to-r from-blue-900/20 to-purple-900/20 backdrop-blur-xl rounded-2xl p-8 border border-blue-500/20">
-            <h3 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-              <Code className="w-5 h-5 text-blue-400" />
-              <span>Setting up GitHub Token</span>
-            </h3>
-            <div className="grid md:grid-cols-4 gap-6">
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-lg font-bold text-blue-400">1</span>
-                </div>
-                <div className="text-sm font-medium mb-1">
-                  Visit GitHub Settings
-                </div>
-                <div className="text-xs text-white">
-                  Go to Developer Settings → Personal Access Tokens
+          {/* New Structure-Only Feature */}
+          <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 backdrop-blur-xl rounded-2xl p-8 border border-purple-500/20">
+            <div className="text-center mb-6">
+              <div className="inline-flex items-center space-x-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 mb-4">
+                <Sparkles className="w-4 h-4 text-purple-400" />
+                <span className="text-sm text-purple-300">New in v2.0</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-4">Structure-Only Mode</h3>
+              <p className="text-white max-w-2xl mx-auto">
+                Perfect for AI analysis and lightweight snapshots - get just the file paths without content or metadata
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-semibold mb-3 text-purple-300">Regular Mode Output</h4>
+                <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-xs border border-slate-700">
+                  <pre className="text-slate-400">{`[
+  {
+    "fileName": "package.json",
+    "filePath": "my-project",
+    "content": "{ ... }",
+    "isBinary": false,
+    "encoding": "utf-8"
+  }
+]`}</pre>
                 </div>
               </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-lg font-bold text-blue-400">2</span>
-                </div>
-                <div className="text-sm font-medium mb-1">Generate Token</div>
-                <div className="text-xs text-white">
-                  Create a new classic token with repo scope
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-lg font-bold text-blue-400">3</span>
-                </div>
-                <div className="text-sm font-medium mb-1">Copy Token</div>
-                <div className="text-xs text-white">
-                  Save the generated token securely
+              <div>
+                <h4 className="font-semibold mb-3 text-blue-300">Structure-Only Mode</h4>
+                <div className="bg-slate-900/80 rounded-lg p-4 font-mono text-xs border border-slate-700">
+                  <pre className="text-slate-400">{`[
+  "my-project/package.json",
+  "my-project/src/index.js",
+  "my-project/src/components/App.jsx",
+  "my-project/README.md"
+]`}</pre>
                 </div>
               </div>
-              <div className="text-center">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-lg font-bold text-blue-400">4</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Usage Examples */}
+      <section id="usage" className="relative z-10 px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Simple Three-Step Process
+            </span>
+          </h2>
+          <p className="text-xl text-white text-center mb-16 max-w-3xl mx-auto">
+            Whether you're cloning local projects or remote repositories, the workflow is always the same
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-20">
+            {/* Step 1 */}
+            <div className="group relative">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-blue-500/30 transition-all h-full">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-xl font-bold">
+                    1
+                  </div>
+                  <h3 className="text-xl font-semibold">Clone & Capture</h3>
                 </div>
-                <div className="text-sm font-medium mb-1">Use with --token</div>
-                <div className="text-xs text-white">
-                  Pass token to snapcube commands
+                <div className="space-y-3 mb-6">
+                  <div className="bg-slate-900/80 rounded-lg p-3 font-mono text-sm border border-slate-700">
+                    <span className="text-blue-400">
+                      snapcube clone ./my-project
+                    </span>
+                  </div>
+                  <div className="bg-slate-900/80 rounded-lg p-3 font-mono text-sm border border-slate-700">
+                    <span className="text-green-400">
+                      snapcube clone-repo github:facebook/react@main
+                    </span>
+                  </div>
+                </div>
+                <p className="text-white">
+                  Capture your entire project structure, file contents, and
+                  metadata into a single JSON file. Works with local directories
+                  and remote repositories.
+                </p>
+              </div>
+              {/* Connection line */}
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-blue-500 to-transparent"></div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="group relative">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-cyan-500/30 transition-all h-full">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold">
+                    2
+                  </div>
+                  <h3 className="text-xl font-semibold">Share & Distribute</h3>
+                </div>
+                <div className="bg-slate-900/80 rounded-lg p-4 mb-6 border border-slate-700 text-center">
+                  <Folder className="w-8 h-8 text-cyan-400 mx-auto mb-2" />
+                  <span className="text-cyan-400 font-mono text-sm">
+                    my-project.snapcube.json
+                  </span>
+                </div>
+                <p className="text-white">
+                  Share the lightweight JSON file through any method - email,
+                  cloud storage, version control, or send directly to AI
+                  assistants for analysis.
+                </p>
+                <div className="mt-4 flex justify-center space-x-4">
+                  <div className="text-xs text-slate-400 bg-slate-800/50 px-2 py-1 rounded">
+                    Email
+                  </div>
+                  <div className="text-xs text-slate-400 bg-slate-800/50 px-2 py-1 rounded">
+                    Cloud
+                  </div>
+                  <div className="text-xs text-slate-400 bg-slate-800/50 px-2 py-1 rounded">
+                    AI
+                  </div>
+                </div>
+              </div>
+              {/* Connection line */}
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-cyan-500 to-transparent"></div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="group">
+              <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-2xl p-8 border border-slate-700/50 hover:border-green-500/30 transition-all h-full">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-xl font-bold">
+                    3
+                  </div>
+                  <h3 className="text-xl font-semibold">Recreate Instantly</h3>
+                </div>
+                <div className="bg-slate-900/80 rounded-lg p-4 mb-6 font-mono text-sm border border-slate-700">
+                  <span className="text-green-400">
+                    snapcube create my-project.snapcube.json
+                  </span>
+                </div>
+                <p className="text-white">
+                  Rebuild the exact project structure anywhere with perfect
+                  fidelity. All files, directories, and metadata are restored
+                  exactly as they were.
+                </p>
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center space-x-2 text-sm text-white">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>Perfect file restoration</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-white">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>Binary files preserved</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -785,7 +799,7 @@ const App = () => {
       </section>
 
       {/* Use Cases */}
-      <section className="relative z-10 px-6 py-20">
+      <section id="features" className="relative z-10 px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-8">
             <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -830,7 +844,7 @@ const App = () => {
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h4 className="font-semibold mb-3 text-blue-300">
-                  🚀 Startup Workflows
+                  Startup Workflows
                 </h4>
                 <ul className="space-y-2 text-white text-sm">
                   <li>• Quickly share MVP prototypes with investors</li>
@@ -841,7 +855,7 @@ const App = () => {
               </div>
               <div>
                 <h4 className="font-semibold mb-3 text-green-300">
-                  🏢 Enterprise Use
+                  Enterprise Use
                 </h4>
                 <ul className="space-y-2 text-white text-sm">
                   <li>• Archive legacy projects for compliance</li>
